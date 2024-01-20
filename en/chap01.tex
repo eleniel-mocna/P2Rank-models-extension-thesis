@@ -1,0 +1,43 @@
+\chapter{ML Models}
+
+In this thesis, I have implemented and tested 3 various models:
+\begin{enumerate}
+    \item Baseline - Random forest classifier
+    \item Random forest classifier on surroundings
+    \item REFINED: https://doi.org/10.1038/s41598-021-90923-y
+    
+\end{enumerate}
+
+\section{Model interface}
+
+All of these models have a common interface of a method  \texttt{predict(protein)}, which takes a protein as an input and returns the predicted probability of each input point being a ligand binding site.
+
+\subsection{Input protein}
+
+The input protein is a 3D cloud of points with features, where each point represents an atom [TODO: TRUE?] in the protein and features characterize chemical and biological characteristics of the described area.
+
+In the program, this is represented by a 2D array of features by locations. The physical position is one of the features, using which we can recreate the points cloud.
+
+\subsection{Output probabilities}
+
+The output of the models is the predicted probability of each location to be a ligand binding site. Using the input order, the output is simply an array of predicted probabilities.
+
+\section{Baseline Random Forest Model}
+
+As a baseline model, we are using a random forest classifier as described in the original paper. It does training and prediction point-wise.
+
+This means that it predicts the probability of a site being ligand binding by only the features logged for the given site.
+
+\section{Surroundings extraction}
+
+For the following models, we need to have features for the surroundings of the site as well as the features logged for it.
+
+To achieve this, we run a simple quadratic algorithm for finding the k nearest neighbors. Then we just append their features to the original ones. For the following algorithms, we use these features instead of the original ones.
+
+\section{Random Forest Model on surroundings}
+
+This model uses RFC as well, but it uses not only the given site's features but also features of the surrounding \textit{k} sites, extracted as described above[TK, link].
+
+\section{REFINED}
+%  https://www.nature.com/articles/s41598-021-90923-y#citeas
+
