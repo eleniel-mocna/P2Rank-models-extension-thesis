@@ -1,1 +1,28 @@
 \chapter{Background}
+A small remark on terminology: In this work, I will use the term High Dimensional (HD) data for any dataset with a number of features larger than 256. In other literature, an HD dataset is often defined as a dataset where N (number of data points) is larger than D (number of features - or dimensions). Still, I decided to use this term in the aforementioned way as I mainly deal with this issue in the following chapter.
+
+
+\section{High dimensional data issues}
+Working with \textit{high dimensional} (HD) data presents many issues, often described as "the curse of dimensionality." These range from exponentially increasing the number of samples needed to obtain the same point density, through uniformly distributed points being on average further and further away, to spheres being very "pointy" (Tk. source). 
+
+These issues also have a noticeable impact on machine learning models. These require amounts of data linearly increasing with the factor of 5 [\cite{Koutroumbas}]. Otherwise, the predictive power of a classifier or regressor decreases with higher dimensionality [\cite{McLachlan}, \cite{Trunk}].
+
+This can be apparent especially in dense neural networks, where the number of parameters will rise with the input dimension. This, in turn, requires more data or the usage of additional methods such as Dropout.
+
+\section{Existing approaches for feature selection}
+These issues are often fought with \textit{Dimensionality Reduction} (DR) techniques. In this work, we show only one method of DR - \textit{Principal component analysis} (PCA). This is because Neural networks have shown the ability to contain DR in themselves (tk. reword or source)
+
+Another approach for applying machine learning models to high-dimensional data is removing some features based on predefined criteria. There are two general approaches to solving this issue. The first one is \textit{wrapper methods}, which evaluates the whole trained model with some features removed. The second one is \textit{filter methods}, which uses some non-model metric to select the most relevant features. This work represents these method classes by \textit{test set accuracy wrapper} (TSAW) and \textit{mutual information filter} (MIF).
+
+With technological advancements in the past years, these methods have often been omitted, as training a model on the whole feature set has often become an easier option.
+
+\section{Images - high dimensional data}
+Humans cannot easily perceive HD data in a vector-like way. Still, we are used to another data format that is much more dense. These are images. Compared to vector-based datasets, images have much more data per sample. For example, a black-and-white image with a resolution of 256 x 256 contains over 65k individual data points. 
+
+State-of-the-art technologies for image classification and other image-related tasks do not use feature selection techniques, at least since AlexNet (2012, tk: source), as they've moved to a solution more integrated into the model's architecture using \textit{Convolutional Neural Networks} (CNN). These neural networks significantly decrease the needed amount of trained parameters in a model by utilizing common filters commonly applied to the input image's individual parts.
+
+We reuse CNNs to potentially achieve higher performance in our models with data transformed into an image, but this also provides us with an easier visualization of a given data point. 
+
+\section{Converting vectors to images}
+Vectors can be directly converted to images (matrices) by reshaping them to the desired shape. This doesn't significantly improve model performance, as images contain positional relationships, which CNNs take full advantage of. In order to utilize this aspect of CNN architecture, we also need to transform vectors into images in a non-trivial way. 
+A method for rearranging features into the image has been proposed in \cite{REFINED}. In this work, we compare this algorithm with the other approaches.

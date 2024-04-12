@@ -1,54 +1,128 @@
-\chapter{ML Models}
+\chapter{Methods}
 
-In this thesis, I have implemented and tested 3 various models:
-\begin{enumerate}
-    \item Baseline - Random forest classifier
-    \item Random forest classifier on surroundings
-    \item REFINED: https://doi.org/10.1038/s41598-021-90923-y
-    
-\end{enumerate}
+In this chapter,  firstly, I'm going to describe the interface each method needs to fulfill for a better comparison. Then, I describe the individual models. In the end, I describe the metrics used for comparing the 
+\section{Models}
+\subsection{Model interface}
 
-\section{Model interface}
-
-All of these models have a common interface of a method  \texttt{predict(protein)}, which takes a protein as an input and returns the predicted probability of each input point being a ligand binding site.
-
-\subsection{Input protein}
-
-The input protein is a 3D cloud of points with features, where each point represents an atom [TK: TRUE?] in the protein and features characterize chemical and biological characteristics of the described area.
-
-In the program, this is represented by a 2D array of features by locations. The physical position is one of the features, using which we can recreate the points cloud.
-
-\subsection{Output probabilities}
-
-The output of the models is the predicted probability of each location to be a ligand binding site. Using the input order, the output is simply an array of predicted probabilities.
-
-\section{Baseline Random Forest Model}
-
-As a baseline model, we are using a random forest classifier as described in the original paper. It does training and prediction point-wise.
-
-This means that it predicts the probability of a site being ligand binding by only the features logged for the given site.
+All of these models have a common interface of a method  \texttt{predict(protein)}, which takes a protein as an input and returns the predicted probability of each input point being an LBS. For better performance, if not specified otherwise, each model accepts the protein in the surroundings-based format as described in \hyperref[Surroundings]{the corresponding section}. This way, the surroundings dataset can be cached, as the computation of it takes multiple hours.
 
 
-\section{Random Forest Model on surroundings}
+\subsection{Baseline - small Random Forest Model}
+As the first model, we recreate the original model from \cite{P2RANK}. This is the only model that takes the data in the original format. We're using this as a baseline model to compare other models, with the one proposed in the original paper.
 
-This model uses RFC as well, but it uses not only the given site's features but also features of the surrounding \textit{k} sites, extracted as described above[TK, link].
+This model uses scikit-learn's RandomForestClassifier (RFC) [\cite{scikit-learn}] as a predictor. As described in the original paper, it uses 200 trees with no depth limit and considers a maximum of 6 features in each split. The rest of the parameters are set to default values as described in the \hyperlink{https://scikit-learn.org/1.1/modules/generated/sklearn.ensemble.RandomForestClassifier.html}{corresponding documentation}.
 
-\section{REFINED}
-% https://www.nature.com/articles/s41467-020-18197-y
-This model follows the following steps
+
+\subsection{Random Forest Model}
+
+Similarly to the Baseline RF model, this model uses an RFC as the predictor. As with all the following models, this one is trained and used on the surroundings dataset. Hyperparameters were tuned using Randomized Parameter Optimization (RPO) from \cite{scikit-learn} with the goal of maximizing the accuracy on a 0.2 validation split. The best hyperparameters found were Tk.
+
+\subsection{PCA + RFC}
+
+Even though RFCs with some modifications can be used for high-dimensional data (such as in \cite{Genuer}), a common approach for handling this case is applying some DM technique as a preprocessing step, most commonly PCA. This is one of the models tested as a baseline to ensure that RFC will not provide falsely low results. PCA's target dimension was handled as a hyperparameter. Using RPO, the best hyperparameters for accuracy on the 0.2 validation set found were Tk.
+
+\subsection{Dense neural network}
+
+Another common approach for classification is dense neural networks (NN). The exact architecture was created by hyperparameter tuning using the Keras Tuner framework towards a 0.2 validation split. The model was optimized using Adam to minimize binary cross-entropy on a 1-unit, sigmoid-activated last layer.
+
+\subsection{REFINED CNN}
+
+This model simplifies an approach proposed by \cite{REFINED}. Compared to the original approach, the DR preprocessing step is skipped. This approach was not tested in the original paper, as some DR method was used in every experiment. The whole algorithm is simplified in the following list. Because this approach is not well known, I'll describe the details in the text following this list. You can see a high-level comparison with the original paper in Figure Tk.
 
 \begin{enumerate}
-    \item Input: Set of samples $X = x_1, ... x_n$ in form of matrices of size \textit{single point features} x \textit{surroundings size} = N.
+    \item Input: Set of samples $X = x_1, ... x_n$, where $\forall i x_i \in \mathbb{R}^{D}$, where $D$ is the number of features for each sample (in this case feature vector as described in \hyperref[Surroundings]{the surroundings extraction section}.
     \item We regulize each feature to follow $f \sim N(0,1)$
-    \item We minimize over all permutations of features the function of 
-    $$ f(X) = \sum_{s=1}^{n} \sum_{i, j, k, l =1}^n D(x_{s, ij}, x_{s, kl}) d((i,j),(k,l)^{-1}$$
-    Where $d$ is the euclidian distance and $D$ absolute difference.\\
-    As this is computationally exponential, we approximate this using the hill climbing algorithm.\\
-    Tk: In the original paper this is done with basian noise and a lot of continuous math - but in principle the same.
-    I don't know why. Maybe because it allows them to run this on GPU for some reason? Or it help the HCA?
-    \item Now we train a CNN-based classifier on the created dataset. Tk: Explain CNNs
-    
+    \item Reshape each sample to $x_i \in R^{k\times l}$, where $k\cdot l = D$.
+    \item We reorder features in the images to create gradients.
+    \item Using this permutation, we create a matrix for each sample used in the following step.
+    \item We train a CNN on the provided data.
 \end{enumerate}
+
+\subsubsection{Pre-REFINED preprocessing}
+
+The first models trained with this approach didn't use any preprocessing. I decided not to recreate the BMDS (or other DR methods) mentioned in the original article. But there was an important part of this step that I didn't account for - feature normalization. This caused issues in the REFINED core and later in the CNN predictions.
+
+Non-normalized data made results from REFINED core visually worse than normalized ones. After explaining the relevant context, I'll discuss why this is the case both in the REFINED core and CNN sections.
+
+After normalization, features are randomly permutated to make this method perform independently in the order of the input features. Then, the vector is reshaped into a matrix of the desired dimensions. 
+
+\subsubsection{REFINED core}
+
+Now comes the interesting part of the algorithm. To allow the location of the feature in the image to have some meaning, we try to minimize over all the permutations of features the value function of 
+    $$ f(O|X) = \sum_{s=1}^{n} \sum_{i, j, k, l =1}^n (x^O_{s, ij} - x^O_{s, kl})^2 \cdot \abs{[i,j] - [k,l]}^{-1}$$
+Where
+\begin{itemize}
+    \item $P([D])$ is the set of all permutations on the list of features from $X$,
+    \item $F(O|X): P([D]) \rightarrow \mathbb{R}$ is the value function,
+    \item $O \in P([D])$ is an ordering of the features
+    \item $x^O_s$ is the sample $x_s$ ordered by the ordering $O$
+\end{itemize}
+Then $x^O_{s, ij}$ is the value is sample $x_s$ on matrix index $[i,j]$ given that the features are ordered by the ordering $O$.
+
+As this is computationally an exponential problem, we approximate this optimum using the hill climbing algorithm (HCA). HCA is not guaranteed to find the optimal permutation. Still, it works well enough as it converges to some local minimum and for convex functions to the global one. I expect that this value function is almost convex (any local minimum will be relatively close to the global one). There isn't a technically viable solution to find the global minimum, as this would require calculating the value function for each permutation (which is $D!$ - or for 900 features $>6\cdot 10^{2269}$). This method was also used in the original paper, so I'm reusing it here.
+
+HCA requires not only the value function $f(X|O)$ but also the neighborhood function $h(O): P([D]) \rightarrow X \in \mathcal{P}(P([D]))$ (output is a subset of $P([D])$ - or a list of orderings). This can be easily computed with the following algorithm:
+\begin{lstlisting}
+def h(ordering:np.ndarray) -> List[np.ndarray]:
+  ret = []
+  for i in range(ordering.shape[0]):
+    for j in range(ordering.shape[1]):
+      for (k, l) in neighboring_pixels(i,j):
+        ret.append(swapped(ordering, (i, j), (k, l)))
+  return ret
+
+def swapped(array: np.ndarray,
+        index0: Tuple[int, int],
+        index1: Tuple[int, int]) -> np.ndarray:
+    array[index0], array[index1] = array[index1], array[index0]
+    return array
+
+def neighboring_pixels(x: int, y: int) -> List[Tuple[int, int]]:
+    return [(x + dx, y + dy) 
+              for dx in (-1, 0, 1)
+              for dy in (-1, 0, 1)
+              if (0 <= x + dx < k and 0 <= y + dy < l)
+                or not (dx == dy == 0)
+            ]
+\end{lstlisting}
+
+For complexity's sake, all the neighbors aren't calculated together for the whole ordering, but after each pixel's neighbors are calculated (so for each $i,j$ from the code), we greedily choose the ordering with the lowest value function (or keep the original one, if it is the best) and calculate all the remaining neighbors from this modified state. This increases performance, as we can make as many as $D$ steps per calculation of value functions for the whole ordering neighborhood. But, as it follows the value function's gradient more approximately, it could lead to a higher chance of ending up in a local minimum. Still, this algorithm runs for multiple hours as is, and this can be partly avoided by running multiple HCA's in parallel.
+
+For this work, I used my own Python implementation of HCA to ensure a smoother integration into the rest of the pipeline. Some more tricks were used to improve the speed of the computations, such as using a Numba JIT compiler, or caching value function results. But still, I expect its speed to be lower than some available libraries using C code as the backend.
+
+After this algorithm is finished, we have a feature ordering with correlated features near each other in a generated image and negatively correlated features further away from each other. In Figure Tk., the process of how features are moving can be seen. Also, this can make it easier for humans to see differences between samples compared to looking at the data simply as a vector.
+
+In one of the first experiments, I tried using a genetic evolutionary algorithm (GEA), but it proved to be much slower than the simple HCA - at least with the configuration used then. HCA can be further optimized and run multiple times in parallel, avoiding its pitfalls (getting stuck in a local minimum). Although I didn't succeed with GEA in this part of the algorithm, with some additional work, it might be faster. But this is out of the scope of this work.
+
+As foreshadowed earlier, the REFINED core does not work well with non-normalized data. This can be easily explained. The REFINED core works by aligning correlated features together. However, to make the process easier, only the $L2$ norm of the difference between each feature is computed. This causes features with different means to be further away from each other. Not only that, it causes features with higher variations to be further away from each other. Small differences between low-variational features then influence the value function very little, compared to high-variational features with vastly different means. However, this is not useful information for the predictor following this step.
+
 
 %  https://www.nature.com/articles/s41598-021-90923-y#citeas
+\section{Evaluation Criteria}
 
+Every method was evaluated in terms of speed and performance criteria. In the following part, I will describe the process of gathering these metrics.
+
+All time-related metrics were gathered on an AMD Ryzen 7 PRO 5850U without GPU acceleration.
+
+\subsection{Training Wall Time}
+
+The training wall time measures the wall time for training a model with already set hyperparameters. We do not include the hyperparameter tuning as for different models, different spaces need to be covered, and a different framework is used for optimizing RFC models and Neural Network-based ones.
+
+The time counter starts just before initializing the untrained model and ends directly after training has ended. This means that evaluation of the model on the test set is not included in this metric, but validation during the training is (e.g., per epoch validation in (C)NN training).
+
+\subsection{Inference Wall Time}
+
+As training is done only once per model lifespan, but inference happens on every model usage, inference time could be much more important depending on the use case.
+
+This time is measured during test-set evaluation and measures only the time the model runs on the whole dataset. This doesn't include metric evaluation of the results, model loading into memory, or any other task.
+
+\subsection{Model performance metrics}
+
+Because all used datasets are imbalanced (97 \% of samples are negative), the f1-score is used as the main evaluation metric. However, accuracy, precision, recall, and false positive rate (FPR) are all calculated. Given that $TP$ is the number of true positives, $FP$ false positives, $TN$ true negatives and $FN$ false positives, aforementioned metrics are defined as follows:
+$$F_1 = \frac{2TP}{2TP + FP + FN}$$
+$$Accuracy = \frac{TP + TN}{TP + FP + TN + FN}$$
+$$Precision = \frac{TP}{TP + FP}$$
+$$Recall = \frac{TP}{TP + FN}$$
+$$FPR = \frac{FP}{FP + TN}$$
+
+For each dataset, a per protein value of each metric is calculated. Then, a 95 \% interval is created for the mean value. These are then plotted to show a comparison.
