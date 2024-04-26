@@ -18,13 +18,15 @@ Proteins are organic macromolecules. They are long chains of smaller molecules c
 
 An amino acid is a small molecule containing an amino group (N-terminus) and a carboxyl group (C-terminus). In a protein, individual amino acids are connected by a peptide bond that connects these two groups of adjacent amino acids.
 
-// pořadí aminokyselin - primární struktura
-// sek.struktura
-// pro LBS je zásadní struktura terciární.
-
 The instructions for making a protein are stored in DNA. Transcribing the genetic code produces mRNA, which serves as a template for the protein. Ribosome units are mounted on this template, and with their help, the individual amino acids forming the protein are connected. As the protein exits the ribosome, folding occurs to ensure the correct 3D structure of the protein. Larger proteins do not fold independently but need auxiliary proteins, so-called chaperones, to fold correctly. The resulting structure is essential for the protein's biological activity and can be used to predict the ligandability of a substance.
 
-The LBS model, therefore, works with the protein's 3D structure and examines whether the given ligand can bind in such a place or whether the protein's surface is unsuitable for binding.
+In terms of protein arrangement three structures are being distinguished. The primary structure represents the order of aminoacids in the sequence. This is being determined by the peptide bounds in the sequence.
+As the protein is being folded the secondary structure is formed with it. Two main substructures usually appear, alpha-helix and beta-pleated sheet. Alpha-helix is a spiral beside beta-sheet refferes to folded pieces of the main sequence together. These constitutions are made due to hydrogen bonding between amino and carboxyl groups of peptide bonds in sequence.
+The tertiary structure describes the spatial organization of the molecule. It is determined by the lower substructures and by non-covalent interactions such as intramolecular hydrogen-bonding, hydrophilic and hydrophobic interactions and other non-covalent forces inside the molecule. This structure is essential for binding other molecules called ligands to the protein. It determines if the surface could form a bound or whether no bound can be created.
+Often the quaternary structure is mentioned in terms of spatial organization. It stands for organisation of several protein subunits who together form an active complex. These subunits can be founded for instance in hemoglobin where four molecules with hem create one greater protein complex. 
+
+For LBS model the 3D structure is essential. Tertiary respectively quaternary structure examines whether the given ligand can bind in such a place or whether the protein's surface is unsuitable for binding.
+
 
 % Tk. Cite: Autor 	Kodíček Milan, Valentová Olga, Hynek Radovan
 % Vydavatel 	VŠCHT Praha (3. vydání, 2022)
@@ -45,13 +47,13 @@ With the dataset creation understood from the real-world side, let us now look a
 
 \subsection{Raw data intuition}
 
-The raw input into any of our models is the protein's 3D structure. This is represented by a point cloud on the protein's surface. Each point has a feature vector attached, which represents the chemical properties of the given accessible surface patch. Each point also has an LBS class, which the model trains and predicts. These can be seen in the figure~\ref{fig:data_point_cloud}.
+The raw input into any of our models is the protein's 3D structure. This is represented by a point cloud on the protein's surface. Each point has a feature vector attached, which represents the chemical properties of the given accessible surface patch. Each point also has an LBS class, which the model trains and predicts. These can be seen in the figure~\ref{fig:class_point_cloud}.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{point_cloud_class.png}
     \caption{SAS point cloud representing a protein with a highlighted ligand-binding site (in red). This point cloud is the input into the whole pipeline discussed in this work. Compare it to the P2Rank visualization in ~\ref{fig:p2rank_visualization} and feature visualization in }
-    \label{fig:pca_point_cloud}. This visualization was created by matplotlib.pyplot.scatter3D.
+    \label{fig:class_point_cloud}. This visualization was created by matplotlib.pyplot.scatter3D.
 \end{figure}
 
 \begin{figure}
