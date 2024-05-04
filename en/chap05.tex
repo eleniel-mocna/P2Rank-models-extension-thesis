@@ -1,3 +1,14 @@
 \chapter{Discussion}
 
-\section{Meaning of the results}
+\section{REFINED as a predictor}
+In this work, I present an algorithm using a CNN for high-dimensional data. \cite{REFINED} proposed a more complicated method, which has shown better performance than other state-of-the-art approaches. The REFINED algorithm uses a CNN, which has been shown to improve results mainly on image-based tasks (such as \cite{AlexNet}). However, when tested on the used datasets, I have not seen any significant improvements compared to other methods.
+
+In the second experiment, I tried to find a correlation between a lower (better) REFINED score and better CNN performance. However, I have not detected any correlation between these two factors.
+
+Compared to the original paper, the used dataset has more samples, which could cause a diminishing result of the regularization effect provided by the CNN architecture. However, through hyperparameter optimization, a comparably large model was found (\textit{NN} has 36k parameters, compared to the 1.8 M parameters in \textit{REFINED}'s CNN). This could have been caused by the hyperparameter space being too large, the smaller models not being explored, or the larger models performing slightly better \footnote{Based on other runs, I'm inclined to believe that it is the case that the smaller models are very similar in performance. Check the section ~\ref{metrics_availability}, where the availability of some more models is described.}.
+
+With all of these experiments, I tried to find some way of showing that REFINED works or that it, for some reason, makes sense to go through all the trouble to rearrange the features to obtain some benefit. But I wasn't able to do that. With all of this, I do not see a strong reason why such REFINED should outperform a simple, dense neural network. The only benefit I have found is that it makes long vectors more human-readable and creates nice graphs.
+
+\section{Conclusions for P2Rank}
+
+Using the same data as the original P2Rank paper, I have been able to reproduce the simple \textit{P2Rank RFC}. This gave me a baseline, over which I was able to improve the model's performance by including the surroundings for each prediction. The improvement in F1 score from 55 \% to 60 \% is significant, but because of the quadratic complexity of surroundings calculation, using such a model in the production of \cite{prankweb} would bring a significant slowdown and the performance improvement might not be so big as the rest of the pipeline works with the surroundings of the SAS point. This is a good starting point for additional research to improve the performance.

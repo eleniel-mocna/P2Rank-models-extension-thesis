@@ -53,6 +53,10 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{dirtytalk}
+\usepackage{caption}
+\usepackage{subcaption}
+
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
@@ -121,12 +125,12 @@ supported by the Ministry of Education, Youth and Sports of the Czech Republic.
 
 % Abstract (recommended length around 80-200 words; this is not a copy of your thesis assignment!)
 \def\Abstract{%
-Abstract.
+Using convolutional neural networks (CNN) for high dimensional data such as images has shown some promising results, but it has issues with features without spatial correlation. I test a streamlined version of the REFINED (REpresentation of Features as Images with NEighborhood Dependencies) model and compare its performance on a ligand binding site detection dataset. I explore the correlation between the CNN performance and the technique used to transform input vectors into images. I find no significant evidence supporting that REFINED has better predictive power than state-of-the-art approaches or CNNs using matrices with randomly assigned feature positions.
 }
 
 % 3 to 5 keywords (recommended), each enclosed in curly braces
 \def\Keywords{%
-{key} {words}
+{Ligand binding sites} {Convolutional Neural Networks} {Machine Learning}
 }
 
 %% The hyperref package for clickable links in PDF and also for storing
@@ -138,8 +142,10 @@ Abstract.
 % Definitions of macros (see description inside)
 \include{macros}
 
+
 % Title page and various mandatory informational pages
 \begin{document}
+
 \include{title}
 
 %%% A page with automatically generated table of contents of the bachelor thesis
@@ -149,7 +155,7 @@ Abstract.
 %%% Each chapter is kept in a separate file
 \include{preface}
 \include{chap01}
-\include{chap02}
+% \include{chap02}
 \include{chap03}
 \include{chap04}
 \include{chap05}
