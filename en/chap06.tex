@@ -1,16 +1,19 @@
-\chapter{Code and data availability and usage}
+\chapter{Code and data availability}
 
-A software framework was developed to run these experiments. This code can be accessed on \href{https://github.com/eleniel-mocna/Refined}{the project GitHub repository}. In this chapter, I'll describe the individual run configurations. Because of the time and memory requirements, there is no single configuration to run all experiments, which would be impractical. Instead, I'll describe the individual run configurations so that individual experiments can be reproduced.
+A software framework was developed to run these experiments. This code can be accessed on \href{https://github.com/eleniel-mocna/Refined}{the project GitHub repository} and is attached to this work \footnote{Development of this software has been assisted by AI-based tools (\href{https://www.jetbrains.com/ai/}{JetBrains AI Assistant}, \href{https://blog.jetbrains.com/blog/2024/04/04/full-line-code-completion-in-jetbrains-ides-all-you-need-to-know/}{JetBrains Full Line Code Completion}, \href{https://github.com/features/copilot}{GitHub Copilot} and \href{https://lp.jetbrains.com/grazie-for-software-teams/}{JetBrains Grazie}.}. A detailed README is attached to the codebase. If you encounter any issues setting the code up, see it for clarification.
+
+\section{Configuration}
+
+The configuration for this pipeline is governed by the \texttt{config.json} file. Here, the datasets used for the training and evaluating the models are configured. Also, the size of the surroundings can be changed there.
+
+\section{Run configuration}
+The simplest way to run all the required steps is by adding the required data to the \texttt{data} folder (for more detailed steps, see the README) and then calling the \texttt{run\_configs/all.sh}. This task can take up to multiple days to complete for the whole dataset. This can be circumvented by downsampling the datasets. Reduced datasets (3 proteins per dataset) are attached to the codebase and can be used as such. The configuration file also allows for reducing the number of proteins used by setting the \texttt{extraction\_size} to the number of proteins that should be processed.
+
+\section{Data}
+
+There is a small sample dataset attached to this work as part of the code repository in the \texttt{data} folder. The whole dataset is attached as a separate compressed archive.
 
 \section{Detailed metrics}
 \label{metrics_availability}
 
-For each model described in this work, I calculated many more metrics. These mainly include per-protein metrics. For all types of models, I uploaded a sample model to the aforementioned repository into \texttt{data/published\_models}. There are more models there, which always have a README attached to them describing the way the model was trained.
-
-\section{Configuration}
-
-The configuration for this pipeline is governed by the \texttt{config.json} file. Here, the main parameters can be adjusted. The most important
-
-\section{Data}
-
-Each dataset for 
+For each model described in this work, I calculated many more metrics. These mainly include per-protein metrics. For each model type, I uploaded a sample model to the aforementioned repository into \texttt{data/published\_models}. There are more models that always have a README attached to them describing how the model was trained.

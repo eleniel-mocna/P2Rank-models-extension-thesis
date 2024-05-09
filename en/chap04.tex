@@ -1,7 +1,7 @@
 \chapter{Experiments}
 \label{experiments}
 
-The experiments in this work were made to test whether the REFINED model can work better than other state-of-the-art methods. The first experiment tested the whole technique in a situation similar to real-life problems. The hope was that the model would show results above the other methods, such as RFC or Dense Neural Networks, commonly used in classification problems. The second experiment is designed to test the hypothesis that using the images transformed by the REFINED core as the input into a CNN increases the performance of its prediction capabilities.
+The experiments in this work were made to test whether the REFINED model can work better than other state-of-the-art methods. The first experiment tested the whole technique in a situation similar to real-life problems. The hope was that the model would show results above the other methods, such as \ac{RFC} or Dense Neural Networks, commonly used in classification problems. The second experiment is designed to test the hypothesis that using the images transformed by the REFINED core as the input into a \ac{CNN} increases the performance of its prediction capabilities.
 
 \section{Experiment 1: Overall comparison}
 \label{first_experiment}
@@ -63,7 +63,7 @@ For this experiment, I took the training dataset and split it into 5 parts. Then
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{ab1.png}
-    \caption{One-way student t-test testing whether model on the y-axis has a higher mean AUC compared to the model on the x-axis. Blacked-out squares represent p-values $> 0.01$. For better understandability, the $-log_{10}(p_value)$ is shown.}
+    \caption{One-way student t-test testing whether model on the y-axis has a higher mean AUC compared to the model on the x-axis. Blacked-out squares represent p-values $> 0.01$. For better understandability, the $-log_{10}(p\_value)$ is shown.}
     \label{fig:ab1}
 \end{figure}
 
@@ -149,17 +149,17 @@ The first question asked was whether REFINED worked as intended. For this, a sim
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{positive_progression.png}
-    \caption{Visualisation of different epochs of REFINED. For selected epochs, the REFINED score is shown with a visualization of the distribution of different features. To obtain the visualization, all positively labeled samples (marked as LBS) were transformed by REFINED at the given epoch (including the normalization step, which is common for all epochs), and then the mean value was plotted. It can be seen that a lot of changes are happening in the first few epochs, improving the REFINED score quickly, but only a few in the second half of the run.}
+    \caption{Visualisation of different epochs of REFINED. For selected epochs, the REFINED score is shown with a visualization of the distribution of different features. To obtain the visualization, all positively labeled samples (marked as \ac{LBS}) were transformed by REFINED at the given epoch (including the normalization step, which is common for all epochs), and then the mean value was plotted. It can be seen that a lot of changes are happening in the first few epochs, improving the REFINED score quickly, but only a few in the second half of the run.}
     \label{fig:REFINED_visualized}
 \end{figure}
 
 \subsection{Experiment 2: CNN performance and REFINED score}
 
-Seeing that there is no visible improvement in the overall REFINED performance compared to the Random CNN, although the visualizations show that REFINED core works as intended, I wanted to test whether training a CNN on REFINED-transformed images produces better results than on images with randomly allocated positions. I have taken the individual epochs of REFINED and trained a CNN model on each epoch of REFINED to test this. These models were trained using the CNN hyperparameters found model in the first experiment. This should only improve the performance of models with better REFINED score.
+Seeing that there is no visible improvement in the overall REFINED performance compared to the Random CNN, although the visualizations show that REFINED core works as intended, I wanted to test whether training a CNN on REFINED-transformed images produces better results than on images with randomly allocated positions. I have taken the individual epochs of REFINED and trained a CNN model on each epoch of REFINED to test this. These models were trained using the CNN hyperparameters found in the first experiment. This should only improve the performance of models with a better REFINED score.
 
 Then, I tested whether there was any correlation between the REFINED score and CNN's performance. The obvious metric to compare is the validation loss, as it represents the training goals the best.
 
-In ~\ref{fig:REFINED_progression}, it can be seen that there is little to no correlation between the REFINED score and the model's performance. Most of the points have a similar REFINED score, as a larger number of pixels can move in the beginning epochs of the REFINED algorithm, quickly decreasing the REFINED score. In contrast at the end only small local changes are happening, causing the clustering.
+In ~\ref{fig:REFINED_progression}, it can be seen that there is little to no correlation between the REFINED score and the model's performance. Most of the points have a similar REFINED score, as a larger number of pixels can move in the beginning epochs of the REFINED algorithm, quickly decreasing the REFINED score. In contrast, at the end, only small local changes are happening, causing the clustering.
 
 \begin{figure}
     \centering

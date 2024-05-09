@@ -1,2 +1,19 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
+In this work, I explored the potential of convolutional neural networks (CNNs) for detecting protein-ligand binding sites, specifically focusing on the REFINED algorithm's ability to transform high-dimensional feature vectors into images suitable for CNN analysis. While previous research suggested promising results with this approach, the findings of this thesis did not provide significant evidence to support the superiority of REFINED over established methods.
+
+The experiments conducted on the CHEN11 and COACH420 datasets revealed that:
+\begin{itemize}
+    \item \textbf{REFINED} did not show a significant improvement in predictive power compared to state-of-the-art approaches, such as Random Forest Classifiers or dense neural networks.*While REFINED successfully rearranged features into images with visual gradients, this did not translate into a demonstrable advantage in binding site prediction accuracy.
+    \item \textbf{No correlation was found between the REFINED score and the performance of CNN models trained on the resulting images.} This suggests that REFINED's specific arrangement of features does not inherently enhance CNN's ability to identify binding sites.
+
+\end{itemize}
+
+While the primary hypothesis of this thesis was not confirmed, valuable insights were gained:
+\begin{itemize}
+    \item \textbf{The importance of considering surrounding features for accurate binding site prediction was confirmed.} Models utilizing the surrounding context of each point, such as the RFC Surrounding and NN models, achieved better performance compared to the P2Rank RFC model that solely relied on individual point features.
+    \item \textbf{The potential of CNNs in this domain remains open for further exploration.} Future research could investigate alternative methods for feature vector transformation or different CNN architectures that might better capture the spatial relationships relevant to protein-ligand interactions. 
+
+\end{itemize}
+
+In conclusion, although the anticipated benefits of REFINED were not observed in this study, the exploration of CNNs for binding site prediction offered valuable insights into the complexities of this problem. The findings suggest that while considering the surrounding context of each point is crucial, the specific arrangement of features within images may not be the determining factor for achieving optimal performance. Future research should continue to investigate the potential of CNNs and alternative approaches to advance the field of protein-ligand binding site prediction. \footnote{Writing of the conclusion chapter has been assisted by the Gemini 1.5 Ultra. The writing of the whole work has been assisted by \href{https://www.grammarly.com/premium}{Grammarly} writing assistant. All usage of AI tools was conducted in accordance with the Code of Ethics of the Faculty of Mathematics and Physics of Charles University.}

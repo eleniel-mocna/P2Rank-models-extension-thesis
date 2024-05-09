@@ -56,6 +56,7 @@
 \usepackage{dirtytalk}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage[printonlyused,withpage]{acronym}
 
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 
@@ -128,9 +129,15 @@ supported by the Ministry of Education, Youth and Sports of the Czech Republic.
 Using convolutional neural networks (CNN) for high dimensional data such as images has shown some promising results, but it has issues with features without spatial correlation. I test a streamlined version of the REFINED (REpresentation of Features as Images with NEighborhood Dependencies) model and compare its performance on a ligand binding site detection dataset. I explore the correlation between the CNN performance and the technique used to transform input vectors into images. I find no significant evidence supporting that REFINED has better predictive power than state-of-the-art approaches or CNNs using matrices with randomly assigned feature positions.
 }
 
+\def\AbstractCS{%
+Použití konvolučních neuronových sítí (CNN) pro vysokorozměrná data, jako jsou obrázky, ukázalo některé slibné výsledky, ale má problémy s featurami bez prostorové korelace. V této práci jsem otestoval zjednodušenou verzi modelu REFINED (REpresentation of Features as Images with Neighborhood Dependencies) a porovnával její výkon na datasetu detekce vazebného místa ligandu. Dále jsem se pokusil najít korelaci mezi prediktivní silou CNN a použitou metodou pro transformaci vstupních vektorů do obrázků. Nenašel jsem žádný výsledek, podporující hypotézu, že by REFINED mělo lepší prediktivní sílu než nejmodernější přístupy nebo jenom CNN využívající matice s náhodně přiřazenými pozicemi prvků.
+}
 % 3 to 5 keywords (recommended), each enclosed in curly braces
 \def\Keywords{%
-{Ligand binding sites} {Convolutional Neural Networks} {Machine Learning}
+{protein} {bioinformatics} {machine learning} {cnn}
+}
+\def\ThesisKeywordsCS{%
+{protein} {bioinformatika} {strojové učení} {cnn}
 }
 
 %% The hyperref package for clickable links in PDF and also for storing
@@ -161,7 +168,7 @@ Using convolutional neural networks (CNN) for high dimensional data such as imag
 \include{chap05}
 \include{chap06}
 
-% \include{epilog}
+\include{epilog}
 
 %%% Bibliography
 \include{bibliography}
@@ -175,7 +182,15 @@ Using convolutional neural networks (CNN) for high dimensional data such as imag
 
 %%% Abbreviations used in the thesis, if any, including their explanation
 %%% In mathematical theses, it could be better to move the list of abbreviations to the beginning of the thesis.
-% \chapwithtoc{List of Abbreviations}
+\chapwithtoc{List of Abbreviations}
+\begin{acronym}
+    \acro{CNN}{Convolutional Neural Network. A neural network with convolutional layers. A good description of convolutional layers is \href{https://www.tensorflow.org/api_docs/python/tf/nn/conv2d}{in the TensorFlow documentation}.}
+    \acro{SAS}{Solvent accessible surface. Area on the surface of the protein. SAS points then represent local spherical 3D neighborhoods that are centered on them. At the same time, they can be seen as potential locations of contact atoms of potential ligands. For more info on SAS points, see \textit{Materials and methods} of \cite{P2RANK}. For a closer description of SAS, see the \href{https://en.wikipedia.org/wiki/Accessible_surface_area}{relevant Wikipedia page}.}
+    \acro{GEA}{Genetic evolutionary algorithm. An optimization algorithm simulating Darwinian evolution. In work, the permutation encoding was used as described \href{https://martinpilat.com/en/nature-inspired-algorithms/evolutionary-algorithms-continuous-and-combinatorial-optimization}{by Martin Pilát.}}
+    \acro{HCA}{Hill Climbing Algorithm. Shortly describe in the relevant footnote: ~\ref{hca_description}, or the relevant \href{https://en.wikipedia.org/wiki/Hill_climbing}{Wikipedia page}.}
+    \acro{RFC}{Random Forest Classifier. A meta classifier made by averaging between multiple decision tree classifiers. Well described on the relevant \href{https://en.wikipedia.org/wiki/Random_forest}{Wikipedia page}.}
+    \acro{LBS}{Ligand Binding Site, see ~\ref{LBS}.}
+\end{acronym}
 
 %%% Attachments to the bachelor thesis, if any. Each attachment must be
 %%% referred to at least once from the text of the thesis. Attachments
@@ -189,9 +204,27 @@ Using convolutional neural networks (CNN) for high dimensional data such as imag
 %%% should be uploaded to SIS and optionally also included in the thesis on a~CD/DVD.
 %%% Allowed file formats are specified in provision of the rector no. 72/2017.
 \appendix
-% \chapter{Attachments}
+\chapter{Attachments}
 
-% \section{First Attachment}
+\section{Feature list}
+\label{feature_list}
+This is the list of features used in the models:
+\begin{lstlisting}
+['chem.hydrophobic', 'chem.hydrophilic', 'chem.hydrophatyIndex',
+'chem.aliphatic', 'chem.aromatic', 'chem.sulfur', 'chem.hydroxyl',
+'chem.basic', 'chem.acidic', 'chem.amide', 'chem.posCharge',
+'chem.negCharge', 'chem.hBondDonor', 'chem.hBondAcceptor',
+'chem.hBondDonorAcceptor', 'chem.polar', 'chem.ionizable', 'chem.atoms',
+'chem.atomDensity', 'chem.atomC', 'chem.atomO', 'chem.atomN',
+'chem.hDonorAtoms', 'chem.hAcceptorAtoms', 'volsite.vsAromatic',
+'volsite.vsCation', 'volsite.vsAnion', 'volsite.vsHydrophobic',
+'volsite.vsAcceptor', 'volsite.vsDonor', 'protrusion.protrusion',
+'bfactor.bfactor', 'xyz.x', 'xyz.y', 'xyz.z', 'atom_table.apRawValids',
+'atom_table.apRawInvalids', 'atom_table.atomicHydrophobicity']
+\end{lstlisting}
+The label is column is named \texttt{'@@class@@'}.
+
+These features are the same as described in \cite{P2RANK}, Additional File, Table 4.
 
 \openright
 \end{document}

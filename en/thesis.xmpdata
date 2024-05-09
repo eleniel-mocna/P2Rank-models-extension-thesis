@@ -1,7 +1,7 @@
 % Metadata to be stored in PDF, see documentation of the pdfx package for more details.
 
-\Author{Name Surname}
-\Title{Thesis title}
-\Keywords{keywords\sep more such\sep yet another}
-\Subject{Abstract of thesis}
+\Author{Samuel Soukup}
+\Title{Using convolutional neural networks to detect protein-ligand binding sites}
+\Keywords{protein \sep bioinformatics \sep machine learning \sep cnn}
+\Subject{Using convolutional neural networks (CNN) for high dimensional data such as images has shown some promising results, but it has issues with features without spatial correlation. I test a streamlined version of the REFINED (REpresentation of Features as Images with NEighborhood Dependencies) model and compare its performance on a ligand binding site detection dataset. I explore the correlation between the CNN performance and the technique used to transform input vectors into images. I find no significant evidence supporting that REFINED has better predictive power than state-of-the-art approaches or CNNs using matrices with randomly assigned feature positions.}
 \Publisher{Charles University}
